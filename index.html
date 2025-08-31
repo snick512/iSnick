@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iSnick - Everyday software.</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="color-scheme" content="dark">
+  <style>
+    /* Inline dark theme for code blocks (lightweight, no external CSS) */
+    .md-body pre { background: #0f172a; color: #e5e7eb; padding: 1rem; border-radius: 0.75rem; overflow:auto; border:1px solid #1f2937; }
+    .md-body code { background: #111827; padding: .15rem .35rem; border-radius: .35rem; }
+    .md-body h1, .md-body h2, .md-body h3 { color:#fda4af; margin-top:1.25rem; font-weight:700 }
+    .md-body a { color: #93c5fd; text-decoration: underline; }
+    /* very small token coloring to mimic syntax highlighting */
+    .tok-key { color:#93c5fd; }
+    .tok-str { color:#a7f3d0; }
+    .tok-cmt { color:#9ca3af; font-style:italic; }
+    .tok-fn  { color:#fcd34d; }
+    .tok-num { color:#fca5a5; }
+    .tok-pre { color:#f472b6; }
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans">
+  <!-- Header -->
+  <header class="p-6 text-center border-b border-gray-800 sticky top-0 z-50 bg-gray-900/90 backdrop-blur">
+    <a href="#" class="block">
+      <h1 class="text-4xl font-bold text-purple-400">iSnick</h1>
+      <p class="text-sm text-gray-400">Everyday software. Open source.</p>
+    </a>
+  </header>
+
+  <!-- LIST VIEW -->
+  <main id="list-view" class="p-8 max-w-5xl mx-auto">
+    <section>
+      <h2 class="text-2xl font-semibold mb-6 text-green-400">Pinned Projects</h2>
+      <div id="projects" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
+    </section>
+  </main>
+
+  <!-- DETAIL VIEW -->
+  <main id="detail-view" class="p-8 max-w-3xl mx-auto hidden">
+    <a href="#" class="inline-flex items-center text-pink-400 hover:underline mb-6">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4A1 1 0 018 6.586L5.414 9H17a1 1 0 110 2H5.414L8 13.414a1 1 0 01-.293 1.293z"/></svg>
+      Back to projects
+    </a>
+
+    <article id="project-card" class="bg-gray-800 border border-gray-700 rounded-2xl shadow-lg p-6">
+      <header class="mb-4">
+        <h2 id="project-title" class="text-3xl font-bold text-orange-400">Project</h2>
+        <p id="project-desc" class="text-gray-400 mt-2">Description</p>
+        <div class="flex flex-wrap items-center gap-3 mt-4 text-sm text-gray-400">
+          <span id="project-lang"></span>
+          <span id="project-stars" class="inline-flex items-center"></span>
+          <span id="project-forks" class="inline-flex items-center"></span>
+          <span id="project-updated" class="inline-flex items-center"></span>
+          <a id="project-link" href="#" target="_blank" class="ml-auto text-purple-300 hover:underline">View on GitHub →</a>
+        </div>
+      </header>
+
+      <section class="mb-8">
+        <h3 class="text-xl font-semibold text-green-400 mb-3">Latest 10 commits</h3>
+        <ol id="commit-list" class="space-y-4"></ol>
+      </section>
+
+      <section>
+        <h3 class="text-xl font-semibold text-green-400 mb-3">README</h3>
+        <div id="readme" class="md-body prose prose-invert max-w-none"></div>
+      </section>
+    </article>
+  </main>
+
+  <!-- Footer with support buttons -->
+  <footer class="p-6 text-center border-t border-gray-800 mt-12 flex flex-col items-center gap-4">
+    <p class="text-gray-500">&copy; 2025 iSnick — Built with ❤️ in Open Source, West Virginia</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="https://go.tyclifford.com/liberapay" target="_blank" class="px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-500 transition">
+        💜 Support on Liberapay
+      </a>
+      <a href="https://tyclifford.com/tip" target="_blank" class="px-4 py-2 rounded-lg bg-pink-600 text-white hover:bg-pink-500 transition">
+        ☕ Tip Me
+      </a>
+    </div>
+  </footer>
+
+  <!-- Embedded marked.js fallback -->
+  <script>
+  const LiteMD = {
+    render(md){
+      md = String(md).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      md = md.replace(/```([a-zA-Z0-9+#-]*)\n([\s\S]*?)```/g,(m,lang,code)=>`<pre><code class="language-${lang.toLowerCase()}">${code.replace(/\n$/,'')}</code></pre>`);
+      md = md.replace(/`([^`]+)`/g,'<code>$1</code>');
+      md = md.replace(/^######\s+(.*)$/gm,'<h6>$1</h6>')
+             .replace(/^#####\s+(.*)$/gm,'<h5>$1</h5>')
+             .replace(/^####\s+(.*)$/gm,'<h4>$1</h4>')
+             .replace(/^###\s+(.*)$/gm,'<h3>$1</h3>')
+             .replace(/^##\s+(.*)$/gm,'<h2>$1</h2>')
+             .replace(/^#\s+(.*)$/gm,'<h1>$1</h1>');
+      md = md.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+      md = md.replace(/^(?!<h\d|<pre|<ul|<ol|<li|<blockquote|<img|<p)(.+)$/gm,'<p>$1</p>');
+      return md;
+    }
+  };
+  </script>
+
+  <script>
+    const pinned = ["Cloudflare","isdownloader","DOIP","Bludit-CLI-Post","Dynamic-IP-Update"];
+    const langColors = {
+      "C":"bg-blue-500","PHP":"bg-purple-500","PowerShell":"bg-green-500",
+      "JavaScript":"bg-yellow-500","Python":"bg-orange-500","Shell":"bg-pink-500"
+    };
+
+    async function renderListView() {
+      toggleViews('list');
+      const grid = document.getElementById('projects');
+      grid.innerHTML = '';
+
+      for (const name of pinned) {
+        const res = await fetch(`https://api.github.com/repos/snick512/${name}`);
+        const data = await res.json();
+        const updated = new Date(data.updated_at).toLocaleDateString();
+
+        const card = document.createElement('div');
+        card.className = "bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700 hover:border-purple-400 transition";
+        card.innerHTML = `
+          <h3 class="text-xl font-bold mb-2 text-orange-400">${data.name}</h3>
+          <p class="mb-4 text-gray-400">${data.description || ''}</p>
+          <div class="flex items-center flex-wrap gap-4 text-sm text-gray-400 mb-4">
+            <span>⭐ ${data.stargazers_count}</span>
+            <span>🍴 ${data.forks_count}</span>
+            <span>🕒 ${updated}</span>
+            ${data.language ? `<span class="inline-block px-2 py-1 text-xs rounded-full text-white ${langColors[data.language] || 'bg-gray-600'}">${data.language}</span>` : ''}
+          </div>
+          <div class="flex gap-3">
+            <a href="${data.html_url}" target="_blank" class="text-pink-400 hover:underline">GitHub</a>
+            <a href="#/project/${encodeURIComponent(data.name)}" class="text-purple-300 hover:underline">Details →</a>
+          </div>
+        `;
+        grid.appendChild(card);
+      }
+    }
+
+    async function renderProjectDetail(repoName) {
+      toggleViews('detail');
+      const title = document.getElementById('project-title');
+      const desc = document.getElementById('project-desc');
+      const lang = document.getElementById('project-lang');
+      const stars = document.getElementById('project-stars');
+      const forks = document.getElementById('project-forks');
+      const updated = document.getElementById('project-updated');
+      const link = document.getElementById('project-link');
+      const commits = document.getElementById('commit-list');
+      const readme = document.getElementById('readme');
+
+      title.textContent = repoName;
+      desc.textContent = 'Loading…';
+      lang.innerHTML = '';
+      stars.textContent = '';
+      forks.textContent = '';
+      updated.textContent = '';
+      link.href = `https://github.com/snick512/${repoName}`;
+      commits.innerHTML = '';
+      readme.innerHTML = '<p class="text-gray-400">Loading README…</p>';
+
+      const res = await fetch(`https://api.github.com/repos/snick512/${repoName}`);
+      const data = await res.json();
+
+      desc.textContent = data.description || '';
+      stars.textContent = `⭐ ${data.stargazers_count}`;
+      forks.textContent = `🍴 ${data.forks_count}`;
+      updated.textContent = `🕒 ${new Date(data.updated_at).toLocaleDateString()}`;
+      lang.innerHTML = data.language ? `<span class="inline-block px-2 py-1 text-xs rounded-full text-white ${langColors[data.language] || 'bg-gray-600'}">${data.language}</span>` : '';
+
+      const commitsRes = await fetch(`https://api.github.com/repos/snick512/${repoName}/commits?per_page=10`);
+      const commitData = await commitsRes.json();
+      if (Array.isArray(commitData)) {
+        commitData.forEach(c => {
+          const li = document.createElement('li');
+          const date = new Date(c.commit.author.date).toLocaleString();
+          li.className = 'bg-gray-900/60 border border-gray-700 rounded-xl p-4';
+          li.innerHTML = `
+            <div class="flex items-center justify-between gap-3">
+              <a href="${c.html_url}" target="_blank" class="font-medium text-purple-300 hover:underline line-clamp-2">${escapeHtml(c.commit.message)}</a>
+              <code class="text-xs text-gray-400">${c.sha.substring(0,7)}</code>
+            </div>
+            <div class="text-xs text-gray-400 mt-2">by ${c.commit.author.name || 'unknown'} • ${date}</div>
+          `;
+          commits.appendChild(li);
+        });
+      } else commits.innerHTML = `<li class="text-gray-400">No commits found.</li>`;
+
+      try {
+        const r1 = await fetch(`https://api.github.com/repos/snick512/${repoName}/readme`, { headers:{'Accept':'application/vnd.github.v3.html'} });
+        if (r1.ok) {
+          const html = await r1.text();
+          readme.innerHTML = html;
+          readme.querySelectorAll('a[href]').forEach(a=>{ a.target='_blank'; a.rel='noopener'; });
+          return;
+        }
+      } catch(e){}
+      try {
+        const meta = await fetch(`https://api.github.com/repos/snick512/${repoName}`);
+        const metaJson = await meta.json();
+        const branch = metaJson.default_branch || 'main';
+        const raw = await fetch(`https://raw.githubusercontent.com/snick512/${repoName}/${branch}/README.md`);
+        const md = await raw.text();
+        readme.innerHTML = LiteMD.render(md);
+      } catch(e){ readme.innerHTML = '<p class="text-gray-400">README could not be loaded.</p>'; }
+    }
+
+    function toggleViews(which) {
+      document.getElementById('list-view').classList.toggle('hidden', which !== 'list');
+      document.getElementById('detail-view').classList.toggle('hidden', which !== 'detail');
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;').replace(/'/g,'&#039;');
+    }
+
+    function router() {
+      const hash = decodeURIComponent(location.hash || '');
+      const match = hash.match(/^#\/project\/(.+)$/);
+      if (match) {
+        const repoName = match[1];
+        if (!pinned.includes(repoName)) { renderListView(); return; }
+        renderProjectDetail(repoName);
+      } else renderListView();
+    }
+
+    window.addEventListener('hashchange', router);
+    router();
+  </script>
+</body>
+</html>
